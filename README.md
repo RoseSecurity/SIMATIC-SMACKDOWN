@@ -101,6 +101,9 @@ After sending the termination command to the controller, the program sends an ad
 		req.Header.Set("Cookie", "siemens_automation_no_intro=TRUE")
 		resp, err := client.Do(req)
 ```
+The PLC STOP commands are demonstrated in the following network capture: 
+
+![SIMATIC](https://user-images.githubusercontent.com/72598486/207712579-9b13ea24-a1b5-4a5c-a582-380d37e34d35.png)
 
 The program proceeds to wipe the filesystem of the device, deleting files accessible and owned by the current user. The damage from this function is dependent on administrative privileges and security context in which the program is run. Running the program as root or administrator will devastate the device.
 
