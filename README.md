@@ -1,4 +1,4 @@
-# :wrestling: SIMATIC-SMACKDOWN:
+# :wrestling: SIMATIC-SMACKDOWN
 
 A simple and compact program targeting SIMATIC S7 Programmable Logic Controllers (PLCs) written in Go. Allowing for cross-compilation to target multiple operating systems out of the box, SIMATIC-SMACKDOWN enumerates networks for S7 devices before launching a distributed attack to STOP PLC CPUs.
 
@@ -24,7 +24,7 @@ The automation process can be seen in the image below:
 
 But what if we could send a signal to turn off the CPU so that communication between the device and the operator could not occur?
 
-# How SIMATIC-SMACKDOWN Works:
+# How SIMATIC-SMACKDOWN Works
 
 SIMATIC-SMACKDOWN operates in three phases: interface enumeration, PLC scanning, and STOP PLC CPU.
 
@@ -117,39 +117,12 @@ func KillWindows() {
 }
 ```
 
-# Install: 
+# Installation 
 
-Download the repository:
+## Source
 
-```
-$ mkdir SIMATIC-SMACKDOWN
-$ cd SIMATIC-SMACKDOWN/
-$ sudo git clone https://github.com/RoseSecurity/SIMATIC-SMACKDOWN.git
-```
-
-Install Go by finding the appropriate package for your OS at ```https://go.dev/dl/```. You can also download the installer file via ```wget```:
-
-```
-$ # wget https://dl.google.com/go/go1.13.5.linux-amd64.tar.gz
-# Extract tarball and profit
-$ sudo tar -C /usr/local/ -xzf go1.13.5.linux-amd64.tar.gz
-```
-
-Or Ubuntu install using ```apt```
-
-``` 
-$ sudo apt install golang-go
-```
-
-Build Binaries:
-
-```
-# Compile for Windows AMD64
-$ env GOOS=windows GOARCH=amd64 go build simatic_smackdown.go
-
-# NOTE: The previously compiled binary will contain symbol table and debugging information. To avoid this, use the following:
-$ env GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" simatic_smackdown.go
-
-# Compile for Linux AMD64
-$ env GOOS=linux GOARCH=amd64 go build simatic_smackdown.go
+```sh
+git clone https://github.com/RoseSecurity/SIMATIC-SMACKDOWN.git
+cd SIMATIC-SMACKDOWN
+make build
 ```
