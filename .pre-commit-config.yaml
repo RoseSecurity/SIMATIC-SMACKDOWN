@@ -11,11 +11,3 @@ repos:
         types: ["go"]
         files: main.go
         pass_filenames: false
-  - repo: local
-    hooks:
-      - id: rebuild-docs
-        name: rebuild-docs
-        entry: bash -c 'make docs'
-        language: system
-        files: cmd\/.*
-        pass_filenames: false
